@@ -1,0 +1,22 @@
+note over browser:
+submit button is pressed.
+browser creates a note and sends it
+to server in JSON format
+It also adds new note to notes locally 
+by manipulating DOM with JS
+end note
+
+browser->server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+
+note over server:
+server stores new note and 
+returns successful status code
+end note
+
+server-->browser: Status 201 Created, {"message":"note created"}
+
+note over browser:
+Browser knows server stored new note 
+but does not redirect. 
+It already added new note locally
+end note
