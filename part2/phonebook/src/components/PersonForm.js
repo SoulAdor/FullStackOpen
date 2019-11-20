@@ -36,11 +36,14 @@ const PersonForm = ({persons, setPersons}) => {
     Database.create(newPerson)
       .then(response => 
         {
-          setPersons(persons.concat (response))    
+          setPersons(persons.concat (response))
           setNotificationMessage (`Added ${response.name}`)
           setTimeout(() => { setNotificationMessage(null) }, notificationTime)
         }
       )
+      .catch(error => {
+        setErrorMessage(error.response.data.error)
+      })  
   }
 
   const resetInput = () => 
