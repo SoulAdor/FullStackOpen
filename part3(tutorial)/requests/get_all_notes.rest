@@ -1,0 +1,8 @@
+//GET http://localhost:3001/notes
+
+POST http://localhost:3001/notes
+Content-Type: application/json
+
+{
+   "key" : true
+}
