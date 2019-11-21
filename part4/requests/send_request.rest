@@ -1,0 +1,11 @@
+//GET http://localhost:3001/notes
+
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+   "title": "Segment Trees",
+   "author": "Andrew2",
+   "url": "segtrees2.org",
+   "likes": 123
+}
