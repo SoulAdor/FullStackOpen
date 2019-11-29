@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ValueInput from './ValueInput'
 import Button from './Button'
 import loginService from '../services/login' 
+import blogsService from '../services/blogs'
 
 function Login({setUser}) {
   const [username, setUsername] = useState('') 
@@ -13,7 +14,12 @@ function Login({setUser}) {
       const user = await loginService.login({
         username, password,
       })
+      // Remember user in local storage
+      window.localStorage.setItem(
+        'loggedNoteappUser', JSON.stringify(user)
+      )
       setUser(user)
+      blogsService.setToken(user.token)
     } catch (exception) {
       console.log('Wrong credentials')
     }
