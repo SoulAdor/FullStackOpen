@@ -1,52 +1,58 @@
-import React, { useState, useEffect } from 'react';
-import Login from './Login'; 
+import React, { useState, useEffect } from 'react'
+import Login from './Login'
 import Blog from './Blog'
 import BlogAdder from './BlogAdder'
+import Togglable from './Togglable'
 
 import blogsService from '../services/blogs'
 
-function App() { 
+function App() {
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
 
-  useEffect(() => {
-    blogsService.getAll().then(allBlogs => setBlogs(allBlogs))
-  }, []);
+  const updateUser = user => {
+    if (user)
+    {
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
+      blogsService.setToken(user.token)
+    }
+    else window.localStorage.removeItem('loggedBlogappUser')
+    setUser(user)
+  }
 
-  // If we had user stored in local storage at the start, take him
+  // If we had user stored in local storage at the start, take user
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogsService.setToken(user.token)
+      updateUser(user)
     }
+    blogsService.getAll().then(allBlogs => setBlogs(allBlogs))
   }, [])
 
+  // Keep sorted copy of blogs
+  var sortedBlogs = [].concat(blogs).sort((a, b) => (a.likes > b.likes) ? -1 : 1)
+
   // Set user to null and remove local storage
-  const logOut = () =>
-  {
-    setUser(null)
-    window.localStorage.removeItem('loggedBlogappUser')
-  }
+  const logOut = () => updateUser(null)
 
   if (user === null) {
     return (
-      <div>
-        <h1>Log in to application</h1>
-        <Login setUser={setUser}/>
-      </div>
+      <Login updateUser={updateUser}/>
     )
   }
+
   return (
     <div>
       <h1>Blogs</h1>
       <p>{`${user.name} logged in`}</p>
       <button type="button" onClick={logOut}>Log out</button>
-      <BlogAdder blogs={blogs} setBlogs={setBlogs}/>
-      {blogs.map (blog => <Blog key={blog.id} blog={blog}/>)}
+      <Togglable buttonLabel="New blog">
+        <BlogAdder blogs={blogs} setBlogs={setBlogs}/>
+      </Togglable>
+      {sortedBlogs.map (blog => <Blog key={blog.id} user={user} blog={blog} blogs={blogs} setBlogs={setBlogs}/>)}
     </div>
-    )
+  )
 }
 
-export default App;
+export default App

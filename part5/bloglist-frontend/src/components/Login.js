@@ -1,37 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import ValueInput from './ValueInput'
 import Button from './Button'
-import loginService from '../services/login' 
-import blogsService from '../services/blogs'
+import ErrorMessage from './ErrorMessage'
+import PropTypes from 'prop-types'
 
-function Login({setUser}) {
-  const [username, setUsername] = useState('') 
+import loginService from '../services/login'
+
+function Login({ updateUser }) {
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
+  const notificationTime = 5000
 
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const user = await loginService.login({
-        username, password,
-      })
-      // Remember user in local storage
-      window.localStorage.setItem(
-        'loggedNoteappUser', JSON.stringify(user)
-      )
-      setUser(user)
-      blogsService.setToken(user.token)
+      const user = await loginService.login({ username, password })
+      updateUser(user)
     } catch (exception) {
-      console.log('Wrong credentials')
+      setErrorMessage('Wrong username or password')
+      setTimeout(() => { setErrorMessage(null)}, notificationTime)
     }
   }
-  
+
   return (
-    <form onSubmit={handleLogin}>
-      <ValueInput type ='text' name='Username' value={username} setValue={setUsername}/>
-      <ValueInput type ='password' name='Password' value={password} setValue={setPassword}/>
-      <Button type ='sumbit' name='Login'/>
-    </form>
-  );
+    <>
+      <h1>Log in to application</h1>
+      <form onSubmit={handleLogin}>
+        <ValueInput type ='text' name='Username' value={username} setValue={setUsername}/>
+        <ValueInput type ='password' name='Password' value={password} setValue={setPassword}/>
+        <Button type ='sumbit' name='Login'/>
+      </form>
+      <ErrorMessage message={errorMessage}/>
+    </>
+  )
 }
 
-export default Login;
+Login.propTypes = {
+  updateUser: PropTypes.func.isRequired
+}
+
+export default Login
