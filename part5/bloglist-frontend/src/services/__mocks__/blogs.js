@@ -38,7 +38,7 @@ const blogs = [
 ]
 
 const setToken = newToken => {
-  return
+  return newToken
 }
 
 const getAll = () => {

@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
-import ValueInput from './ValueInput'
 import Notification from './Notification'
+import { useField } from '../hooks/index'
 
 import blogService from '../services/blogs'
 
 function BlogAdder({ blogs, setBlogs }) {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  const title = useField('text')
+  const author = useField('text')
+  const url = useField('text')
 
   const notificationTime = 5000
   const [notification, setNotification] = useState(null)
@@ -15,22 +15,42 @@ function BlogAdder({ blogs, setBlogs }) {
   const handleCreate = async (event) => {
     event.preventDefault()
     try {
-      const result = await blogService.create({ title, author, url })
+      const result = await blogService.create({ title: title.value, author:author.value, url:url.value })
       setBlogs (blogs.concat(result))
-      setNotification(`A new blog ${title} by ${author} added`)
+      title.reset()
+      author.reset()
+      url.reset()
+
+      setNotification(`A new blog ${title.value} by ${author.value} added`)
       setTimeout(() => { setNotification(null)}, notificationTime)
     } catch (exception) {
       console.log('Error while posting new blog')
     }
   }
 
+  const titleArgs = { ...title }
+  delete titleArgs.reset
+  const authorArgs = { ...author }
+  delete authorArgs.reset
+  const urlArgs = { ...url }
+  delete urlArgs.reset
+
   return (
     <>
       <h2>Create new</h2>
       <form onSubmit={handleCreate}>
-        <ValueInput type ='text' name='Title' value={title} setValue={setTitle}/>
-        <ValueInput type ='text' name='Author' value={author} setValue={setAuthor}/>
-        <ValueInput type ='text' name='URL' value={url} setValue={setUrl}/>
+        <div>
+          Title:
+          <input  {...titleArgs} />
+        </div>
+        <div>
+          Author:
+          <input  {...authorArgs} />
+        </div>
+        <div>
+          Url:
+          <input  {...urlArgs} />
+        </div>
         <button type={'sumbit'}>{'Create'}</button>
         <Notification message={notification}/>
       </form>

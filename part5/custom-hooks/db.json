@@ -1,0 +1,38 @@
+{
+  "notes": [
+    {
+      "content": "custom-hooks are awesome!",
+      "id": 1
+    },
+    {
+      "content": "best feature ever <3",
+      "id": 2
+    },
+    {
+      "content": "I even can add notes?",
+      "id": 3
+    }
+  ],
+  "persons": [
+    {
+      "name": "mluukkai",
+      "number": "040-5483923",
+      "id": 1
+    },
+    {
+      "name": "andreas",
+      "number": "8 800 200 500",
+      "id": 2
+    },
+    {
+      "name": "Name",
+      "number": "number",
+      "id": 3
+    },
+    {
+      "name": "Woah",
+      "number": "This is insane",
+      "id": 4
+    }
+  ]
+}
