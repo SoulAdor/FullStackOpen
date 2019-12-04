@@ -24,7 +24,7 @@ function Login({ updateUser }) {
   }
 
   return (
-    <>
+    <div className="Login">
       <h1>Log in to application</h1>
       <form onSubmit={handleLogin}>
         <ValueInput type ='text' name='Username' value={username} setValue={setUsername}/>
@@ -32,7 +32,7 @@ function Login({ updateUser }) {
         <Button type ='sumbit' name='Login'/>
       </form>
       <ErrorMessage message={errorMessage}/>
-    </>
+    </div>
   )
 }
 

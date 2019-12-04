@@ -8,7 +8,6 @@ const Blog = ({ user, blog, blogs, setBlogs }) => {
 
   const showWhenVisible = { display: visible ? '' : 'none' }
   const userCanRemove = { display: user.username === blog.user.username ? '' : 'none' }
-  //const userCanRemove = { display: "" }
 
   const blogStyle = {
     paddingTop: 10,
@@ -41,11 +40,11 @@ const Blog = ({ user, blog, blogs, setBlogs }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className ='blog'>
       <div onClick={() => setVisible(!visible)}>
         {blog.title} {blog.author}
       </div>
-      <div style={showWhenVisible}>
+      <div style={showWhenVisible} className="togglableContent">
         <a href={blog.url}>{blog.url}</a>
         <div>
           {likes} likes

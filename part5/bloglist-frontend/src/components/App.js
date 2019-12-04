@@ -43,7 +43,7 @@ function App() {
   }
 
   return (
-    <div>
+    <div className="Blogs">
       <h1>Blogs</h1>
       <p>{`${user.name} logged in`}</p>
       <button type="button" onClick={logOut}>Log out</button>
