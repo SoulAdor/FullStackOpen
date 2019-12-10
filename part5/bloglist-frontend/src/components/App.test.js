@@ -24,8 +24,6 @@ describe('<App />', () => {
     )
     await waitForElement(() => component.container.querySelector('.Login'))
 
-    //const blogs = component.container.querySelectorAll('.blogs')
-
     // expectations here
     expect(component.container.querySelector('.Login')).toBeTruthy()
     expect(component.container.querySelector('.Blogs')).toBeNull()

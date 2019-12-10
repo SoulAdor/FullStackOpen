@@ -1,31 +1,23 @@
-import React, { useState } from 'react'
-import Button from './Button'
-import ErrorMessage from './ErrorMessage'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { useField } from '../hooks/index'
+import { connect } from 'react-redux'
+import { updateNotification } from '../reducers/notificationReducer'
+import { logInUser } from '../reducers/userReducer'
 
-import loginService from '../services/login'
-
-function Login({ updateUser }) {
+const Login = ({ logInUser, updateNotification }) => {
   const username = useField('text')
   const password = useField('password')
-  const [errorMessage, setErrorMessage] = useState(null)
-  const notificationTime = 5000
 
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const user = await loginService.login({ username: username.value, password:password.value })
-      updateUser(user)
+      await logInUser({ username: username.value, password: password.value })
     } catch (exception) {
-      setErrorMessage('Wrong username or password')
-      setTimeout(() => { setErrorMessage(null)}, notificationTime)
+      console.log(exception)
+      updateNotification('Wrong username or password', true, 5)
     }
   }
-  const usernameArgs = { ...username }
-  delete usernameArgs.reset
-  const passwordArgs = { ...password }
-  delete passwordArgs.reset
 
   return (
     <div className="Login">
@@ -33,21 +25,29 @@ function Login({ updateUser }) {
       <form onSubmit={handleLogin}>
         <div>
           Username:
-          <input { ...usernameArgs } />
+          <input { ...username} reset={undefined} />
         </div>
         <div>
           Password:
-          <input  { ...passwordArgs }/>
+          <input  { ...password} reset={undefined} />
         </div>
-        <Button type ='sumbit' name='Login'/>
+        <button type ='sumbit'> Login </button>
       </form>
-      <ErrorMessage message={errorMessage}/>
     </div>
   )
 }
 
 Login.propTypes = {
-  updateUser: PropTypes.func.isRequired
+  logInUser: PropTypes.func.isRequired,
+  updateNotification: PropTypes.func.isRequired
 }
 
-export default Login
+const mapDispatchToProps = {
+  updateNotification,
+  logInUser
+}
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(Login)

@@ -36,5 +36,4 @@ const remove = async blog => {
   return response.data
 }
 
-
 export default { setToken, getAll, create, update, remove }

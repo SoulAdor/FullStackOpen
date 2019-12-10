@@ -1,6 +1,8 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 
-const notificationStyle = {
+const usualStyle = {
   color: 'green',
   background: 'lightgrey',
   fontSize: 20,
@@ -10,8 +12,11 @@ const notificationStyle = {
   marginBottom: 10
 }
 
-const Notification = ({ message }) => {
-  if (message === null) return null
+const errorStyle = { ...usualStyle, color: 'red' }
+
+const Notification = ({ message, error }) => {
+  if (!message) return null
+  const notificationStyle = (error ? errorStyle : usualStyle)
   return (
     <div style={notificationStyle}>
       {message}
@@ -19,4 +24,18 @@ const Notification = ({ message }) => {
   )
 }
 
-export default Notification
+Notification.propTypes = {
+  message: PropTypes.string,
+  error: PropTypes.bool
+}
+
+const mapStateToProps = (state) => {
+  return {
+    message: state.notification.message,
+    error: state.notification.error
+  }
+}
+
+export default connect(
+  mapStateToProps
+) (Notification)

@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
+import { connect } from 'react-redux'
+import { updateNotification } from '../reducers/notificationReducer'
+import { updateBlog, deleteBlog } from '../reducers/blogsReducer'
 
-import blogService from '../services/blogs'
-
-const Blog = ({ user, blog, blogs, setBlogs }) => {
+const Blog = ({ user, blog, updateBlog, deleteBlog, updateNotification }) => {
   const [visible, setVisible] = useState(false)
-  const [likes, setLikes] = useState(blog.likes)
 
   const showWhenVisible = { display: visible ? '' : 'none' }
-  const userCanRemove = { display: user.username === blog.user.username ? '' : 'none' }
+  // User has to exist for the check, if no user, cannot delete anything
+  const userCanRemove = { display: (user && user.username === blog.user.username) ? '' : 'none' }
+  // const userCanRemove = { display: '' }
 
   const blogStyle = {
     paddingTop: 10,
@@ -18,24 +20,19 @@ const Blog = ({ user, blog, blogs, setBlogs }) => {
   }
 
   const clickLike = async () => {
-    try{
-      let updatedBlog = blog
-      updatedBlog.likes = likes + 1
-      const result = await blogService.update(updatedBlog)
-      setLikes(result.likes)
+    try {
+      await updateBlog({ ...blog, likes: blog.likes + 1 })
     } catch(exception) {
-      console.log (exception)
+      updateNotification ('Error while updating blog', true, 5)
     }
   }
 
   const clickRemove = async () => {
-    try{
-      if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-        await blogService.remove(blog)
-        setBlogs (blogs.filter(someBlog => someBlog.id !== blog.id))
-      }
+    try {
+      if (window.confirm(`Remove blog ${blog.title} by ${blog.author} ?`))
+        await deleteBlog(blog)
     } catch(exception) {
-      console.log (exception)
+      updateNotification ('Error while deleting blog', true, 5)
     }
   }
 
@@ -47,13 +44,28 @@ const Blog = ({ user, blog, blogs, setBlogs }) => {
       <div style={showWhenVisible} className="togglableContent">
         <a href={blog.url}>{blog.url}</a>
         <div>
-          {likes} likes
+          {blog.likes} likes
           <button type ='button' name='Like' onClick={clickLike}>{'Like'}</button>
         </div>
-        <p> Added by {blog.user ? blog.user.username : 'Unknown'} </p>
+        <p> Added by {blog.user.username} </p>
         <button style={userCanRemove} type="button" onClick={clickRemove}>Remove</button>
       </div>
     </div>
   )}
 
-export default Blog
+const mapDispatchToProps = {
+  updateBlog,
+  deleteBlog,
+  updateNotification
+}
+
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Blog)

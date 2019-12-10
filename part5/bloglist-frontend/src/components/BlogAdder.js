@@ -1,39 +1,29 @@
-import React, { useState } from 'react'
-import Notification from './Notification'
+import React from 'react'
 import { useField } from '../hooks/index'
+import { connect } from 'react-redux'
+import { updateNotification } from '../reducers/notificationReducer'
+import { createBlog } from '../reducers/blogsReducer'
 
-import blogService from '../services/blogs'
-
-function BlogAdder({ blogs, setBlogs }) {
+const BlogAdder = ({ updateNotification, createBlog }) => {
   const title = useField('text')
   const author = useField('text')
   const url = useField('text')
-
-  const notificationTime = 5000
-  const [notification, setNotification] = useState(null)
+  const reset = () => {
+    title.reset()
+    author.reset()
+    url.reset()
+  }
 
   const handleCreate = async (event) => {
     event.preventDefault()
+    reset()
     try {
-      const result = await blogService.create({ title: title.value, author:author.value, url:url.value })
-      setBlogs (blogs.concat(result))
-      title.reset()
-      author.reset()
-      url.reset()
-
-      setNotification(`A new blog ${title.value} by ${author.value} added`)
-      setTimeout(() => { setNotification(null)}, notificationTime)
+      await createBlog({ title: title.value, author:author.value, url:url.value })
+      updateNotification(`A new blog ${title.value} by ${author.value} added`, false, 5)
     } catch (exception) {
-      console.log('Error while posting new blog')
+      updateNotification('Error while posting new blog', true, 5)
     }
   }
-
-  const titleArgs = { ...title }
-  delete titleArgs.reset
-  const authorArgs = { ...author }
-  delete authorArgs.reset
-  const urlArgs = { ...url }
-  delete urlArgs.reset
 
   return (
     <>
@@ -41,21 +31,28 @@ function BlogAdder({ blogs, setBlogs }) {
       <form onSubmit={handleCreate}>
         <div>
           Title:
-          <input  {...titleArgs} />
+          <input  {...title} reset={undefined}/>
         </div>
         <div>
           Author:
-          <input  {...authorArgs} />
+          <input  {...author} reset={undefined}/>
         </div>
         <div>
           Url:
-          <input  {...urlArgs} />
+          <input  {...url} reset={undefined}/>
         </div>
         <button type={'sumbit'}>{'Create'}</button>
-        <Notification message={notification}/>
       </form>
     </>
   )
 }
 
-export default BlogAdder
+const mapDispatchToProps = {
+  updateNotification,
+  createBlog
+}
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(BlogAdder)
