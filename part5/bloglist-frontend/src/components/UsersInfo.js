@@ -2,28 +2,27 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { Table } from 'react-bootstrap'
 
-const UsersInfo = ({ usersBlogs }) => {
-  return (
-    <>
-      <h2> Users </h2>
-      <table>
-        <tbody>
-          <tr>
-            <th></th>
-            <th>Blogs Created</th>
+const UsersInfo = ({ usersBlogs }) => (
+  <>
+    <h2> Users </h2>
+    <Table striped>
+      <tbody>
+        <tr>
+          <th> Name </th>
+          <th> Blogs Created </th>
+        </tr>
+        {usersBlogs.map (usersBlog =>
+          <tr key={usersBlog.id}>
+            <td><Link to={`/users/${usersBlog.id}`}> {usersBlog.name} </Link></td>
+            <td>{usersBlog.numberOfBlogs}</td>
           </tr>
-          {usersBlogs.map (usersBlog =>
-            <tr key={usersBlog.id}>
-              <td><Link to={`/users/${usersBlog.id}`}> {usersBlog.name} </Link></td>
-              <td>{usersBlog.numberOfBlogs}</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </>
-  )
-}
+        )}
+      </tbody>
+    </Table>
+  </>
+)
 
 UsersInfo.propTypes = {
   usersBlogs: PropTypes.array.isRequired

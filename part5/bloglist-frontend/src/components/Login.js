@@ -1,18 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useField } from '../hooks/index'
 import { connect } from 'react-redux'
 import { updateNotification } from '../reducers/notificationReducer'
 import { logInUser } from '../reducers/userReducer'
+import { Form, Button } from 'react-bootstrap'
 
 const Login = ({ logInUser, updateNotification }) => {
-  const username = useField('text')
-  const password = useField('password')
-
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      await logInUser({ username: username.value, password: password.value })
+      await logInUser ({ username: event.target.username.value, password: event.target.password.value })
     } catch (exception) {
       updateNotification('Wrong username or password', true, 5)
     }
@@ -21,17 +18,19 @@ const Login = ({ logInUser, updateNotification }) => {
   return (
     <div className="Login">
       <h1>Log in to application</h1>
-      <form onSubmit={handleLogin}>
-        <div>
-          Username:
-          <input { ...username} reset={undefined} />
-        </div>
-        <div>
-          Password:
-          <input  { ...password} reset={undefined} />
-        </div>
-        <button type ='sumbit'> Login </button>
-      </form>
+      <Form onSubmit={handleLogin}>
+        <Form.Group>
+          <Form.Label> Username: </Form.Label>
+          <Form.Control type="text" name="username" placeholder="Enter username"/>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label> Password: </Form.Label>
+          <Form.Control type="password" name="password" placeholder="Enter password"/>
+        </Form.Group>
+        <Form.Group>
+          <Button variant="primary" type ='sumbit'> Login </Button>
+        </Form.Group>
+      </Form>
     </div>
   )
 }

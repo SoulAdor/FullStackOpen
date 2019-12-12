@@ -1,26 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useField } from '../hooks/index'
 import { connect } from 'react-redux'
 import { updateNotification } from '../reducers/notificationReducer'
 import { createBlog } from '../reducers/blogsReducer'
+import { Form, Button } from 'react-bootstrap'
 
 const BlogAdder = ({ createBlog, updateNotification }) => {
-  const title = useField('text')
-  const author = useField('text')
-  const url = useField('text')
-  const reset = () => {
-    title.reset()
-    author.reset()
-    url.reset()
-  }
-
   const handleCreate = async (event) => {
     event.preventDefault()
-    reset()
+    event.persist()
     try {
-      await createBlog({ title: title.value, author:author.value, url:url.value })
-      updateNotification(`A new blog ${title.value} by ${author.value} added`, false, 5)
+      await createBlog({
+        title: event.target.title.value,
+        author: event.target.author.value,
+        url: event.target.url.value
+      })
+      updateNotification(`A new blog ${event.target.title.value} by ${event.target.author.value} added`, false, 5)
+      event.target.title.value = ''
+      event.target.author.value = ''
+      event.target.url.value = ''
     } catch (exception) {
       updateNotification('Error while posting new blog', true, 5)
     }
@@ -28,22 +26,24 @@ const BlogAdder = ({ createBlog, updateNotification }) => {
 
   return (
     <>
-      <h2>Create new</h2>
-      <form onSubmit={handleCreate}>
-        <div>
-          Title:
-          <input  {...title} reset={undefined}/>
-        </div>
-        <div>
-          Author:
-          <input  {...author} reset={undefined}/>
-        </div>
-        <div>
-          Url:
-          <input  {...url} reset={undefined}/>
-        </div>
-        <button type={'sumbit'}>{'Create'}</button>
-      </form>
+      <h2 className='text-info'>Create new</h2>
+      <Form onSubmit={handleCreate}>
+        <Form.Group>
+          <Form.Label> Title: </Form.Label>
+          <Form.Control type='text' name='title' placeholder="Enter title"/>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label> Author: </Form.Label>
+          <Form.Control type='text' name='author' placeholder="Enter author"/>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label> Url: </Form.Label>
+          <Form.Control type='text' name='url' placeholder="Enter url"/>
+        </Form.Group>
+        <Form.Group>
+          <Button variant='primary' type ='sumbit'> Create </Button>
+        </Form.Group>
+      </Form>
     </>
   )
 }

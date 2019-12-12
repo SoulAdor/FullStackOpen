@@ -1,26 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-
-const usualStyle = {
-  color: 'green',
-  background: 'lightgrey',
-  fontSize: 20,
-  borderStyle: 'solid',
-  borderRadius: 5,
-  padding: 10,
-  marginBottom: 10
-}
-
-const errorStyle = { ...usualStyle, color: 'red' }
+import { Alert } from 'react-bootstrap'
 
 const Notification = ({ message, error }) => {
-  if (!message) return null
-  const notificationStyle = (error ? errorStyle : usualStyle)
-  return (
-    <div style={notificationStyle}>
+  return !message ? null : (
+    <Alert variant={error ? 'danger' : 'success' }>
       {message}
-    </div>
+    </Alert>
   )
 }
 

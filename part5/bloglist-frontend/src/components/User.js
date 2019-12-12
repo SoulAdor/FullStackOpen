@@ -4,10 +4,10 @@ import { connect } from 'react-redux'
 const User = ({ user }) => {
   return !user ? null : (
     <>
-      <h2> {user.name} </h2>
+      <h2 className='d-flex justify-content-center'> {user.name} </h2>
       <h3> Added blogs </h3>
-      <ul>
-        { user.blogs.map (blog => <li key={blog.id}>{blog.title}</li>) }
+      <ul className='list-group'>
+        { user.blogs.map (blog => <li className='list-group-item text-info' key={blog.id}>{blog.title}</li>) }
       </ul>
     </>
   )}

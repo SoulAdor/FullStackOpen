@@ -19,13 +19,12 @@ const App = ({ user, initUser, initBlogs, initUsers }) =>  {
   useEffect(() => {initUsers()}, [initUsers])
 
   return (
-    <>
-      <Notification/>
-      {
+    <div className='container'>
+      <Notification/> {
         !user ? <Login/> : (
           <Router>
             <Menu/>
-            <h2>Blog app</h2>
+            <h2 className='d-flex justify-content-center text-primary'>Blog app</h2>
             <Route exact path="/" render={() => <Blogs />} />
             <Route exact path="/users" render={() => <UsersInfo />} />
             <Route exact path="/users/:id" render={({ match }) =>
@@ -37,7 +36,7 @@ const App = ({ user, initUser, initBlogs, initUsers }) =>  {
           </Router>
         )
       }
-    </>
+    </div>
   )
 }
 
