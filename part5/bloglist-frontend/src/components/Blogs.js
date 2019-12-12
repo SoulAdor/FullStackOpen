@@ -1,25 +1,34 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import Blog from './Blog'
+import BlogAdder from './BlogAdder'
+import Togglable from './Togglable'
 import { connect } from 'react-redux'
-import { initBlogs } from '../reducers/blogsReducer'
+import { Link } from 'react-router-dom'
 
-const Blogs = ({ blogs, initBlogs }) => {
-  useEffect(() => {
-    const fetchData = async () => await initBlogs()
-    fetchData()
-  }, [initBlogs])
-
-  return (
-    <div className="Blogs">
-      {blogs.map (blog => <Blog key={blog.id} blog={blog}/>)}
-    </div>
-  )
+const blogStyle = {
+  paddingTop: 10,
+  paddingLeft: 2,
+  border: 'solid',
+  borderWidth: 1,
+  marginBottom: 5
 }
 
+const Blogs = ({ blogs }) => (
+    <>
+      <h2> Blogs </h2>
+      <Togglable buttonLabel="New blog">
+        <BlogAdder/>
+      </Togglable>
+      {blogs.map (blog =>
+        <div key={blog.id} style={blogStyle}>
+          <Link to={`/blogs/${blog.id}`}> {blog.title} {blog.author} </Link>
+        </div>
+      )}
+    </>
+)
+
 Blogs.propTypes = {
-  blogs: PropTypes.array.isRequired,
-  initBlogs: PropTypes.func.isRequired
+  blogs: PropTypes.array.isRequired
 }
 
 const getSorted = (blogs) => {
@@ -32,11 +41,6 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = {
-  initBlogs
-}
-
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToProps
 )(Blogs)

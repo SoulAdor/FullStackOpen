@@ -1,5 +1,5 @@
 const notificationAtStart = {
-  message : undefined,
+  message : null,
   error: false
 }
 
@@ -12,7 +12,7 @@ export const updateNotification = (message, error, timeInSeconds) => {
         error
       }
     })
-    setTimeout(() => dispatch({ type: 'DELETE_NOTIFICATION' }), 1000*timeInSeconds)
+    setTimeout(() => dispatch(removeNotification()), 1000*timeInSeconds)
   }
 }
 

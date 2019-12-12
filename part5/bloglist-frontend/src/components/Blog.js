@@ -1,23 +1,15 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { updateNotification } from '../reducers/notificationReducer'
 import { updateBlog, deleteBlog } from '../reducers/blogsReducer'
+import { useField } from '../hooks/index'
 
 const Blog = ({ user, blog, updateBlog, deleteBlog, updateNotification }) => {
-  const [visible, setVisible] = useState(false)
+  const comment = useField('text')
 
-  const showWhenVisible = { display: visible ? '' : 'none' }
+  if (!blog) return null
   // User has to exist for the check, if no user, cannot delete anything
   const userCanRemove = { display: (user && user.username === blog.user.username) ? '' : 'none' }
-  // const userCanRemove = { display: '' }
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
 
   const clickLike = async () => {
     try {
@@ -36,21 +28,38 @@ const Blog = ({ user, blog, updateBlog, deleteBlog, updateNotification }) => {
     }
   }
 
+  const handleCreate = async (event) => {
+    event.preventDefault()
+    try {
+      const updatedBlog = blog
+      updatedBlog.comments = [...updatedBlog.comments, comment.value]
+      await updateBlog(updatedBlog)
+      updateNotification(`A new comment ${comment.value} added`, false, 5)
+    } catch (exception) {
+      updateNotification('Error while posting new comment', true, 5)
+    }
+  }
+
   return (
-    <div style={blogStyle} className ='blog'>
-      <div onClick={() => setVisible(!visible)}>
-        {blog.title} {blog.author}
+    <>
+      <h2> {blog.title} {blog.author} </h2>
+      <a href={blog.url}>{blog.url}</a>
+      <div>
+        {blog.likes} likes
+        <button type ='button' name='Like' onClick={clickLike}>{'Like'}</button>
       </div>
-      <div style={showWhenVisible} className="togglableContent">
-        <a href={blog.url}>{blog.url}</a>
-        <div>
-          {blog.likes} likes
-          <button type ='button' name='Like' onClick={clickLike}>{'Like'}</button>
-        </div>
-        <p> Added by {blog.user.username} </p>
-        <button style={userCanRemove} type="button" onClick={clickRemove}>Remove</button>
-      </div>
-    </div>
+      <p> Added by {blog.user.username} </p>
+      <button style={userCanRemove} type="button" onClick={clickRemove}>Remove</button>
+      <h3> comments </h3>
+      <h2> Create new </h2>
+      <form onSubmit={handleCreate}>
+        <input  {...comment} reset={undefined}/>
+        <button type={'sumbit'}>{'Add comment'}</button>
+      </form>
+      <ul>
+        { blog.comments.map ( (comment, index) => <li key={index}> { comment } </li> )}
+      </ul>
+    </>
   )}
 
 const mapDispatchToProps = {
@@ -59,9 +68,10 @@ const mapDispatchToProps = {
   updateNotification
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   return {
     user: state.user,
+    blog: state.blogs.find(blog => blog.id === ownProps.id)
   }
 }
 

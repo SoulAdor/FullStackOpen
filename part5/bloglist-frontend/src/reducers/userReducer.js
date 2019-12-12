@@ -5,8 +5,7 @@ const userAtStart = null
 
 // Initialize user from local storage
 export const initUser = () => {
-  const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-  const user = JSON.parse(loggedUserJSON)
+  const user = JSON.parse(window.localStorage.getItem('loggedBlogappUser'))
   const token = user ? user.token : null
   blogsService.setToken(token)
   return async dispatch => {

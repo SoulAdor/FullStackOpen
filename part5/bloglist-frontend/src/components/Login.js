@@ -14,7 +14,6 @@ const Login = ({ logInUser, updateNotification }) => {
     try {
       await logInUser({ username: username.value, password: password.value })
     } catch (exception) {
-      console.log(exception)
       updateNotification('Wrong username or password', true, 5)
     }
   }

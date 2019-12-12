@@ -1,46 +1,62 @@
 import React, { useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Login from './Login'
+import Menu from './Menu'
+import User from './User'
 import Blogs from './Blogs'
-import BlogAdder from './BlogAdder'
-import Togglable from './Togglable'
+import Blog from './Blog'
+import UsersInfo from './UsersInfo'
 import Notification from './Notification'
-import { logOutUser, initUser } from '../reducers/userReducer'
+import { initUser } from '../reducers/userReducer'
+import { initBlogs } from '../reducers/blogsReducer'
+import { initUsers } from '../reducers/usersReducer'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 
-const Body = ({ user, logOutUser }) =>  {
-  return user === null ? <Login /> : (
-    <div className="Blogs">
-      <h1>Blogs</h1>
-      <p>{`${user.name} logged in`}</p>
-      <button type="button" onClick={logOutUser}>Log out</button>
-      <Togglable buttonLabel="New blog">
-        <BlogAdder/>
-      </Togglable>
-      <Blogs/>
-    </div>
-  )
-}
+const App = ({ user, initUser, initBlogs, initUsers }) =>  {
+  useEffect(() => {initBlogs()}, [initBlogs])
+  useEffect(() => {initUser()}, [initUser])
+  useEffect(() => {initUsers()}, [initUsers])
 
-const App = ({ user, logOutUser, initUser }) =>  {
-  useEffect(() => {
-    initUser()
-  }, [initUser])
   return (
     <>
-      <Body user={user} logOutUser={logOutUser}/>
       <Notification/>
+      {
+        !user ? <Login/> : (
+          <Router>
+            <Menu/>
+            <h2>Blog app</h2>
+            <Route exact path="/" render={() => <Blogs />} />
+            <Route exact path="/users" render={() => <UsersInfo />} />
+            <Route exact path="/users/:id" render={({ match }) =>
+              <User id={match.params.id} />
+            } />
+            <Route exact path="/blogs/:id" render={({ match }) =>
+              <Blog id={match.params.id} />
+            } />
+          </Router>
+        )
+      }
     </>
   )
 }
 
+App.propTypes = {
+  user: PropTypes.object,
+  initUser: PropTypes.func.isRequired,
+  initBlogs: PropTypes.func.isRequired,
+  initUsers: PropTypes.func.isRequired
+}
+
 const mapDispatchToProps = {
-  logOutUser,
-  initUser
+  initUser,
+  initBlogs,
+  initUsers
 }
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user,
+    user: state.user
   }
 }
 

@@ -1,4 +1,20 @@
 
+POST http://localhost:3003/api/blogs/5ddcfdffe3f6101a98e82f11/comments
+Content-Type: application/json
+
+{
+   "comment": "this is new comment3"
+}
+
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+   "username": "sss",
+   "name": "s",
+   "password": "sss"
+}
+
 DELETE  http://localhost:3003/api/blogs/5ddd051cd579821de4bf2682
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNpbHZhIiwiaWQiOiI1ZGRiZWE2MTIxOGVlOTNjZWNjNGExMzAiLCJpYXQiOjE1NzQ3NjgzODl9.pywMsk0JdPmDZe-F8WJx4kpt44wezRfODriN5Go-HZ0
 
@@ -21,12 +37,3 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNvd
    "likes": "232"
 }
 
-
-POST http://localhost:3003/api/users
-Content-Type: application/json
-
-{
-   "username": "Silva",
-   "name": "The greatest",
-   "password": "Pinka"
-}

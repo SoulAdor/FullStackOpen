@@ -1,10 +1,11 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { useField } from '../hooks/index'
 import { connect } from 'react-redux'
 import { updateNotification } from '../reducers/notificationReducer'
 import { createBlog } from '../reducers/blogsReducer'
 
-const BlogAdder = ({ updateNotification, createBlog }) => {
+const BlogAdder = ({ createBlog, updateNotification }) => {
   const title = useField('text')
   const author = useField('text')
   const url = useField('text')
@@ -45,6 +46,11 @@ const BlogAdder = ({ updateNotification, createBlog }) => {
       </form>
     </>
   )
+}
+
+BlogAdder.propTypes = {
+  createBlog: PropTypes.func.isRequired,
+  updateNotification: PropTypes.func.isRequired
 }
 
 const mapDispatchToProps = {

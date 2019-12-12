@@ -9,6 +9,19 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs.map(blog => blog.toJSON()))
 })
 
+blogsRouter.post('/:id/comments', async (request, response, next) => {
+  try {
+    const comment = request.body.comment
+    const blog = await Blog.findById(request.params.id)
+    blog.comments = [...blog.comments, comment]
+    const savedBlog = await blog.save()
+    const updatedBlog = await Blog.findOne(savedBlog).populate('user', { username: 1, name: 1, id: 1 })
+    response.status(201).json(updatedBlog)
+  } catch(exception) {
+    next (exception)
+  }
+})
+
 blogsRouter.post('/', async (request, response, next) => {
   try {
     // Check token
@@ -18,7 +31,6 @@ blogsRouter.post('/', async (request, response, next) => {
     if (!decodedToken.id) return  response.status(401).json({ error: 'invalid token' })
 
     // Find user with given id
-    // const user = User.findOne({ 'username': "SoulAdor" }).exec()
     const user = await User.findById(decodedToken.id)
 
     // Save blog
@@ -59,7 +71,8 @@ blogsRouter.put('/:id', async (request, response, next) => {
       title: body.title,
       author: body.author,
       url: body.url,
-      likes: body.likes
+      likes: body.likes,
+      comments: body.comments
     }
     const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true }).populate('user', { username: 1, name: 1, id: 1 })
     response.json(updatedBlog.toJSON())
