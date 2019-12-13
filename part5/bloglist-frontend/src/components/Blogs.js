@@ -14,7 +14,7 @@ const Blogs = ({ blogs }) => (
     <ul className='list-group'>
       {blogs.map (blog =>
         <li key={blog.id}  className='list-group-item'>
-          <Link to={`/blogs/${blog.id}`}> {blog.title} {blog.author} </Link>
+          <Link data-cy='link_to_blog' to={`/blogs/${blog.id}`}> {blog.title} {blog.author} </Link>
         </li>
       )}
     </ul>

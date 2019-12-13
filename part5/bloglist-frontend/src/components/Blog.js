@@ -56,10 +56,10 @@ const Blog = ({ user, blog, updateBlog, deleteBlog, updateNotification }) => {
       <Form onSubmit={handleCreate}>
         <Form.Group>
           <Form.Label> Comment: </Form.Label>
-          <Form.Control type="text" name="comment" placeholder="Enter comment"/>
+          <Form.Control data-cy='comment' type="text" name="comment" placeholder="Enter comment"/>
         </Form.Group>
         <Form.Group>
-          <Button variant="primary" type ='sumbit'> Add comment </Button>
+          <Button data-cy='comment-add-button' variant="primary" type ='sumbit'> Add comment </Button>
         </Form.Group>
       </Form>
       <ul className='list-group'>

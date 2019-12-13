@@ -4,7 +4,12 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Table } from 'react-bootstrap'
 
-const UsersInfo = ({ usersBlogs }) => (
+const numBlogs = (userId, blogs) =>
+{
+  return blogs.filter(blog => blog.user.id === userId).length
+}
+
+const UsersInfo = ({ users, blogs }) => (
   <>
     <h2> Users </h2>
     <Table striped>
@@ -13,10 +18,10 @@ const UsersInfo = ({ usersBlogs }) => (
           <th> Name </th>
           <th> Blogs Created </th>
         </tr>
-        {usersBlogs.map (usersBlog =>
-          <tr key={usersBlog.id}>
-            <td><Link to={`/users/${usersBlog.id}`}> {usersBlog.name} </Link></td>
-            <td>{usersBlog.numberOfBlogs}</td>
+        {users.map (user =>
+          <tr key={user.id}>
+            <td><Link to={`/users/${user.id}`}> {user.name} </Link></td>
+            <td data-cy='num-blogs'>{numBlogs(user.id, blogs)}</td>
           </tr>
         )}
       </tbody>
@@ -25,16 +30,14 @@ const UsersInfo = ({ usersBlogs }) => (
 )
 
 UsersInfo.propTypes = {
-  usersBlogs: PropTypes.array.isRequired
-}
-
-const toUsersBlogs = users => {
-  return users.map (user => {return { id: user.id, name: user.name, numberOfBlogs : user.blogs.length }} )
+  users: PropTypes.array.isRequired,
+  blogs: PropTypes.array.isRequired
 }
 
 const mapStateToProps = (state) => {
   return {
-    usersBlogs: toUsersBlogs(state.users),
+    users: state.users,
+    blogs: state.blogs
   }
 }
 

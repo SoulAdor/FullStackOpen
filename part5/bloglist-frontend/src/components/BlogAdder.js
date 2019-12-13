@@ -30,18 +30,18 @@ const BlogAdder = ({ createBlog, updateNotification }) => {
       <Form onSubmit={handleCreate}>
         <Form.Group>
           <Form.Label> Title: </Form.Label>
-          <Form.Control type='text' name='title' placeholder="Enter title"/>
+          <Form.Control id='create_title' type='text' name='title' placeholder="Enter title"/>
         </Form.Group>
         <Form.Group>
           <Form.Label> Author: </Form.Label>
-          <Form.Control type='text' name='author' placeholder="Enter author"/>
+          <Form.Control id='create_author' type='text' name='author' placeholder="Enter author"/>
         </Form.Group>
         <Form.Group>
           <Form.Label> Url: </Form.Label>
-          <Form.Control type='text' name='url' placeholder="Enter url"/>
+          <Form.Control id='create_url' type='text' name='url' placeholder="Enter url"/>
         </Form.Group>
         <Form.Group>
-          <Button variant='primary' type ='sumbit'> Create </Button>
+          <Button id='create_button' variant='primary' type ='sumbit'> Create </Button>
         </Form.Group>
       </Form>
     </>
