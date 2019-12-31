@@ -1,12 +1,12 @@
 import React, { useState } from 'react' 
 
-const Authors = ({show, authors, editBirth}) => {
+const Authors = ({show, authors, editAuthor}) => {
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
 
   const changeBirth = async (e) => {
     e.preventDefault()
-    await editBirth({ variables: { name, setBornTo : Number(born) }})
+    await editAuthor({ variables: { name, born : Number(born) }})
     setBorn('')
   }
 
