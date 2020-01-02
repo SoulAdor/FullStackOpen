@@ -14,7 +14,6 @@ const httpLink = createHttpLink({
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('books-user-token')
-  console.log('In index: ', token)
   return {
     headers: {
       ...headers,

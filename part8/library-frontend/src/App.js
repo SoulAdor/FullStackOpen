@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
+import Recommend from './components/Recommend'
 import Login from './components/Login'
 
 import { Query, Mutation, ApolloConsumer } from 'react-apollo'
@@ -15,17 +16,18 @@ const ALL_AUTHORS = gql`
 `
 
 const ALL_BOOKS = gql`
-{
-  allBooks { 
-    title 
-    author {
-      name, 
-      born
-    } 
-    published 
-    id 
+  query allBooks($genre: String) {
+    allBooks (genre: $genre) { 
+      title 
+      author {
+        name, 
+        born
+      } 
+      published 
+      genres
+      id 
+    }
   }
-}
 `
 
 const CREATE_BOOK = gql`
@@ -68,18 +70,13 @@ const GET_USER = gql`
 
 const App = () => {
   const [page, setPage] = useState('authors')
-  const [token, setToken] = useState(null)
   const [client, setClient] = useState(null)
   const [user, setUser] = useState(null)
 
-  console.log('user: ', user)
-  console.log('App token: ', localStorage.getItem('books-user-token'))
-
   const logout = () => {
-    setToken(null)
     localStorage.clear()
     client.resetStore()
-    setPage('login')
+    setPage('authors')
   }
 
   return (
@@ -91,7 +88,6 @@ const App = () => {
       <Query query={GET_USER}>
         {(result) => {
           if (result.loading) return <div>Loading user...</div>
-          console.log("User data: ", result.data.me)
           setUser (result.data.me)
           return null
         }}
@@ -102,16 +98,13 @@ const App = () => {
         <button onClick={() => setPage('books')}>books</button>
         <button onClick={() => setPage('login')} style={!user ? {} : {display: 'none'}}>login</button>
         <button onClick={() => setPage('add')} style={user ? {} : {display: 'none'}}>add book</button>
+        <button onClick={() => setPage('recommend')} style={user ? {} : {display: 'none'}}>recommend</button>
         <button onClick={logout} style={user ? {} : {display: 'none'}}>logout</button>
       </div>
 
       <Query query={ALL_AUTHORS}>
         {(result) => {
-          if ( result.loading ) return <div>loading...</div>
-          if (!result.data) {
-            console.log('No data authors')
-            return null
-          }
+          if ( result.loading ) return <div>loading all authors...</div>
           return (
             <Mutation mutation={EDIT_AUTHOR}>
               {(editAuthor) =>
@@ -126,28 +119,40 @@ const App = () => {
         }}
       </Query>
         
-      <Query query={ALL_BOOKS}>
+      <Query query={ALL_BOOKS} variables={{ genre : null }}>
         {(result) => {
-        if ( result.loading ) return <div>loading...</div>
-        if (!result.data) {
-          console.log('No data books')
-          return null
-        }
-        return (
-          <Books
-            show={page === 'books'}
-            books={result.data.allBooks}
-          />
-        )
-      }}
+          if ( result.loading ) return <div>loading all books...</div>
+          if ( !result.data )  return <div> No books all </div>
+          return (
+            <Books
+              show={page === 'books'}
+              books={result.data.allBooks}
+              client={client}
+              ALL_BOOKS={ALL_BOOKS}
+            />
+          )
+        }}
       </Query>
 
-      <Mutation mutation={CREATE_BOOK} refetchQueries={[{ query: ALL_AUTHORS }, { query: ALL_BOOKS }]}>
-        {(addBook) => <NewBook  show={page === 'add'} addBook={addBook}/>}
+      <Mutation mutation={CREATE_BOOK} refetchQueries={[{ query: ALL_AUTHORS }, { query: ALL_BOOKS, variables: { genre: null } }]}>
+        {(addBook) => <NewBook show={page === 'add'} addBook={addBook}/>}
       </Mutation>
 
-      <Mutation mutation={LOGIN} refetchQueries={[{ query: GET_USER }]}>
-        {(login) => <Login show={page === 'login'} setToken={setToken} login={login}></Login>}
+      <Query query={ALL_BOOKS} variables={{ genre: user ? user.favoriteGenre : null }} fetchPolicy={'no-cache'}>
+        {(result) => {
+          if ( result.loading ) return <div>loading recommend...</div>
+          return (
+            <Recommend
+              show={page === 'recommend'}
+              recommendedBooks={result.data.allBooks}
+              favoriteGenre={user ? user.favoriteGenre : null}
+            />
+          )
+        }}
+      </Query>
+
+      <Mutation mutation={LOGIN} refetchQueries={[{ query: GET_USER }]} >
+        { (login) => <Login show={page === 'login'} login={login}></Login> }
       </Mutation>
     </div>
   )

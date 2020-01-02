@@ -7,16 +7,10 @@ const NewBook = ({ show, addBook }) => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
-  if (!show) {
-    return null
-  }
-
   const submit = async (e) => {
     e.preventDefault()
 
-    await addBook({
-      variables: { title, author, published : Number(published), genres }
-    })
+    await addBook({variables: { title, author, published : Number(published), genres }})
     
     setTitle('')
     setPublished('')
@@ -30,6 +24,7 @@ const NewBook = ({ show, addBook }) => {
     setGenre('')
   }
 
+  if (!show) return null
   return (
     <div>
       <form onSubmit={submit}>

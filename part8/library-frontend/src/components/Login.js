@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Login = ({show, login, setToken}) => { 
+const Login = ({show, login}) => { 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -13,20 +13,17 @@ const Login = ({show, login, setToken}) => {
 
     if (result) {
       const token = result.data.login.value
-      setToken(token)
       localStorage.setItem('books-user-token', token)
+      window.location.reload(false)
     }
-    
-    setUsername('')
-    setPassword('')
   }
 
   if (!show) return null
   return (
     <div>
-       <form onSubmit={submit}>
+      <form onSubmit={submit}>
         <div>
-          name: 
+          Name: 
           <input
             value={username}
             onChange={({ target }) => setUsername(target.value)}
