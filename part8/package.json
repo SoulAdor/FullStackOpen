@@ -9,6 +9,7 @@
   "author": "Andreas Niedens",
   "license": "ISC",
   "dependencies": {
+    "apollo-link-ws": "^1.0.19",
     "apollo-server": "^2.9.15",
     "bcryptjs": "^2.4.3",
     "graphql": "^14.5.8",
@@ -16,6 +17,7 @@
     "mongoose": "^5.8.3",
     "mongoose-unique-validator": "^2.0.3",
     "save": "^2.4.0",
+    "subscriptions-transport-ws": "^0.9.16",
     "uuid": "^3.3.3"
   }
 }

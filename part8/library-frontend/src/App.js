@@ -5,7 +5,7 @@ import NewBook from './components/NewBook'
 import Recommend from './components/Recommend'
 import Login from './components/Login'
 
-import { Query, Mutation, ApolloConsumer } from 'react-apollo'
+import { Query, Mutation, Subscription, ApolloConsumer } from 'react-apollo'
 import { gql } from 'apollo-boost'
 
 const ALL_AUTHORS = gql`
@@ -68,6 +68,21 @@ const GET_USER = gql`
 }
 `
 
+const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      title 
+      published 
+      author {
+        name, 
+        born
+      }  
+      genres 
+      id 
+    }
+  }
+`
+
 const App = () => {
   const [page, setPage] = useState('authors')
   const [client, setClient] = useState(null)
@@ -79,11 +94,34 @@ const App = () => {
     setPage('authors')
   }
 
+  const updateCacheWith = (addedBook) => {
+    const includedIn = (set, object) => 
+      set.map(p => p.id).includes(object.id)  
+
+    const dataInStore = client.readQuery({ query: ALL_BOOKS, variables: { genre: null } })
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      dataInStore.allBooks.push(addedBook)
+      client.writeQuery({
+        query: ALL_BOOKS,
+        variables: { genre: null },
+        data: dataInStore
+      })
+    }   
+  }
+
   return (
     <div> 
       <ApolloConsumer>
         {(client => setClient(client))}
       </ApolloConsumer>
+
+      <Subscription subscription={BOOK_ADDED} 
+        onSubscriptionData={opts => {  
+          const addedBook = opts.subscriptionData.data.bookAdded
+          window.alert(`New book added: ${addedBook.title}`)
+          updateCacheWith(addedBook)
+        }}
+      />
 
       <Query query={GET_USER}>
         {(result) => {
@@ -119,10 +157,9 @@ const App = () => {
         }}
       </Query>
         
-      <Query query={ALL_BOOKS} variables={{ genre : null }}>
+      <Query query={ALL_BOOKS} variables={{ genre : null }} >
         {(result) => {
           if ( result.loading ) return <div>loading all books...</div>
-          if ( !result.data )  return <div> No books all </div>
           return (
             <Books
               show={page === 'books'}
