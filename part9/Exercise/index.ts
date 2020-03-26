@@ -24,27 +24,27 @@ app.get('/bmi', (req, res) => {
 app.post('/exercises', (req, res) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const body = req.body;
-  if (!body.hasOwnProperty('target') || !body.hasOwnProperty('daily_exercises')) {
+  if (!Object.prototype.hasOwnProperty.call(body, 'target') || 
+      !Object.prototype.hasOwnProperty.call(body, 'daily_exercises')) {
     res.status(400).send({ error: "parameters missing" });
   }
 
   // Check target
-  const target : number = body.target;
+  const target: number = body.target;
   if (typeof target !== "number") {
     res.status(400).send({ error: "malformatted parameters" });
   }
 
   // Check daily exercises
-  const daily_exercises : Array <number> = body.daily_exercises;
-  if (!Array.isArray(daily_exercises)) {
+  const dailyExerciseHours: Array <number> = body.daily_exercises;
+  if (!Array.isArray(dailyExerciseHours)) {
     res.status(400).send({ error: "malformatted parameters" });
   }
-  const number_NaN = daily_exercises.filter (daily_exercise  => typeof daily_exercise !== "number").length;
-  if (number_NaN > 0) {
+  if (dailyExerciseHours.filter (dailyExerciseHour  => typeof dailyExerciseHour !== "number").length > 0) {
     res.status(400).send({ error: "malformatted parameters" });
   }
 
-  return res.json(calculateExercises(daily_exercises, target));
+  return res.json(calculateExercises(dailyExerciseHours, target));
 });
 
 const PORT = 3002;
