@@ -1,6 +1,6 @@
-const calculateBmi = (height : number, weight : number) : string => {
-  const meter_height = height / 100;
-  const BMI = weight / (meter_height * meter_height);
+const calculateBmi = (height: number, weight: number): string => {
+  const meterHeight = height / 100;
+  const BMI = weight / (meterHeight * meterHeight);
   if (BMI < 15) return "Very severely underweight";
   else if (BMI < 16) return "Severely underweight";
   else if (BMI < 18.5) return "Underweight";
@@ -9,7 +9,7 @@ const calculateBmi = (height : number, weight : number) : string => {
   else if (BMI < 35) return "Obese Class I (Moderately obese)";
   else if (BMI < 40) return "Obese Class II (Severely obese)";
   else return "Obese Class III (Very severely obese)";
-}
+};
 
 interface Parameters {
   height: number;
@@ -24,7 +24,7 @@ const parseArguments = (args: Array<string>): Parameters => {
   if (isNaN(height) || isNaN(weight)) throw new Error('Provided values were not numbers!');
   if (height < 10 || weight < 1) throw new Error('Numbers provided not in range!');
   return { height, weight };
-}
+};
 
 try {
   const { height, weight } = parseArguments(process.argv);
@@ -33,4 +33,4 @@ try {
   console.log('Error, something bad happened, message: ', e.message);
 }
 
-export {};
+export default calculateBmi;
