@@ -15,13 +15,6 @@ npx json-server --port 3001 --watch db.json
 "server": "json-server -p3001 db.json"
 npm run server
 
-// Normalize css
-npm install postcss-normalize --save-dev
-@import "normalize.css"
-// Or
-npm install --save normalize.css
-Add import 'normalize.css'; 
-
 // Run production build from the root of the frontend project.
 npm run build
 
@@ -56,7 +49,7 @@ npm install redux --save
 // For connect
 npm install --save react-redux
 
-// Ensure immutability?
+// Ensure immutability
 npm install --save-dev deep-freeze
 
 // Asynchronous actions
@@ -82,6 +75,19 @@ npm audit fix
 // Webpack
 npm install --save-dev webpack webpack-cli
 
+// For GraphQL like axios
+npm install apollo-boost react-apollo graphql --save
+
+// Typescript. 
+// You can install both ts-node and the official typescript package globally by running 
+npm install -g ts-node typescript
+// Locally
+npm install --save-dev ts-node typescript
+// in "scripts"
+    "ts-node": "ts-node"
+// Install types for certain library
+npm install --save-dev @types/node
+
 -------------------------------------------------------------------------------------------------------------
 // Backend
 
@@ -103,7 +109,7 @@ npm install --save morgan
 // For cross origin access control
 npm install cors --save
 
-To make express show static content, the page index.html and the JavaScript etc. it fetches, we need built-in middleware from express called static.
+// To make express show static content, the page index.html and the JavaScript etc. it fetches, we need built-in middleware from express called static.
 
 // Heroku
 heroku create
@@ -159,5 +165,23 @@ npm install jsonwebtoken --save
 // Removes express vulnerabilities
 npm install helmet --save
 
-// Security reasons
+// Security reasons. Well, scripts wont work so probably not a good idea
 npm config set ignore-scripts true
+
+// Server for graphQL
+npm install --save apollo-server graphql
+
+// For unique ids
+npm install uuid
+
+// For header manipulations
+npm install --save apollo-link apollo-link-context
+
+// For subscriptions
+npm install --save subscriptions-transport-ws apollo-link-ws
+
+// Typescript alternative to nodemon
+npm install --save-dev ts-node-dev
+
+// Typescript eslint with extensions
+npm install --save-dev eslint @typescript-eslint/eslint-plugin @typescript-eslint/parser
